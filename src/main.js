@@ -9,12 +9,6 @@ import { renderGallery, gallery } from './js/render-functions';
 const formElem = document.querySelector('.form');
 const loader = document.querySelector('.loader');
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-lightbox.refresh();
-
 formElem.addEventListener('submit', event => {
   event.preventDefault();
   const query = formElem.elements.query.value.trim();
@@ -40,6 +34,11 @@ formElem.addEventListener('submit', event => {
     .then(data => {
       const markup = renderGallery(data.hits);
       gallery.innerHTML = markup;
+      const lightbox = new SimpleLightbox('.link', {
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
+      lightbox.refresh();
     })
     .catch(error => {
       console.error('Error fetching data:', error);
