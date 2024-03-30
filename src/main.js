@@ -4,9 +4,48 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 import { getImage } from './js/pixabay-api';
+import { renderGallery, gallery } from './js/render-functions';
 
-const searchForm = document.querySelector('.form');
-const inputElement = document.querySelector('.search-input');
+const formElem = document.querySelector('.form');
 const loader = document.querySelector('.loader');
 
-searchForm.addEventListener('submit', submitHandle);
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+lightbox.refresh();
+
+formElem.addEventListener('submit', event => {
+  event.preventDefault();
+  const query = formElem.elements.query.value.trim();
+  gallery.innerHTML = '<div class="loader is-hidden"></div>';
+
+  if (query === '') {
+    iziToast.error({
+      title: 'Error',
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+      color: 'red',
+      maxWidth: '432px',
+      height: '88px',
+      position: 'topRight',
+    });
+
+    return;
+  }
+
+  loader.classList.remove('is-hidden');
+
+  getImage(query)
+    .then(data => {
+      const markup = renderGallery(data.hits);
+      gallery.innerHTML = markup;
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    })
+    .finally(() => {
+      loader.classList.add('is-hidden');
+      formElem.reset();
+    });
+});
