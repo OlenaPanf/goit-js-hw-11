@@ -12,7 +12,7 @@ const loader = document.querySelector('.loader');
 formElem.addEventListener('submit', event => {
   event.preventDefault();
   const query = formElem.elements.query.value.trim();
-  gallery.innerHTML = '<div class="loader is-hidden"></div>';
+  gallery.innerHTML = '';
 
   if (query === '') {
     iziToast.error({
